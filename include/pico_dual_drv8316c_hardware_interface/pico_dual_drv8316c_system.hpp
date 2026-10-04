@@ -35,17 +35,15 @@
 #include "rclcpp/macros.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 
-namespace pico_dual_drv8316c_hardware_interface
-{
+namespace pico_dual_drv8316c_hardware_interface {
 
-constexpr const char * kHwIfGainKp = "gain_kp";
-constexpr const char * kHwIfGainKd = "gain_kd";
+constexpr const char* kHwIfGainKp = "gain_kp";
+constexpr const char* kHwIfGainKd = "gain_kd";
 
 /// Per-joint command/state storage. `effort` carries the board's current
 /// feedforward / measured current in Amps, `Kp`/`Kd` the PD gains in
 /// A/rad and A/(rad/s) as defined by USB_PROTOCOL.md.
-struct JointValues
-{
+struct JointValues {
   double position{0.0};
   double velocity{0.0};
   double effort{0.0};
@@ -57,40 +55,42 @@ struct JointValues
 /// in the order the joints appear under the <ros2_control> tag.
 constexpr std::size_t kNumMotors = 2;
 
-class SystemPicoDualDrv8316CHardware : public hardware_interface::SystemInterface
-{
-public:
+class SystemPicoDualDrv8316CHardware
+    : public hardware_interface::SystemInterface {
+ public:
   RCLCPP_SHARED_PTR_DEFINITIONS(SystemPicoDualDrv8316CHardware)
 
   hardware_interface::CallbackReturn on_init(
-    const hardware_interface::HardwareComponentInterfaceParams & info) override;
+      const hardware_interface::HardwareComponentInterfaceParams& info)
+      override;
 
   hardware_interface::CallbackReturn on_configure(
-    const rclcpp_lifecycle::State & previous_state) override;
+      const rclcpp_lifecycle::State& previous_state) override;
 
-  std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
+  std::vector<hardware_interface::StateInterface> export_state_interfaces()
+      override;
 
-  std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
+  std::vector<hardware_interface::CommandInterface> export_command_interfaces()
+      override;
 
   hardware_interface::return_type prepare_command_mode_switch(
-    const std::vector<std::string> & start_interfaces,
-    const std::vector<std::string> & stop_interfaces) override;
+      const std::vector<std::string>& start_interfaces,
+      const std::vector<std::string>& stop_interfaces) override;
 
   hardware_interface::CallbackReturn on_activate(
-    const rclcpp_lifecycle::State & previous_state) override;
+      const rclcpp_lifecycle::State& previous_state) override;
 
   hardware_interface::CallbackReturn on_deactivate(
-    const rclcpp_lifecycle::State & previous_state) override;
+      const rclcpp_lifecycle::State& previous_state) override;
 
-  hardware_interface::return_type read(
-    const rclcpp::Time & time, const rclcpp::Duration & period) override;
+  hardware_interface::return_type read(const rclcpp::Time& time,
+                                       const rclcpp::Duration& period) override;
 
   hardware_interface::return_type write(
-    const rclcpp::Time & time, const rclcpp::Duration & period) override;
+      const rclcpp::Time& time, const rclcpp::Duration& period) override;
 
-private:
-  enum class ControlMode
-  {
+ private:
+  enum class ControlMode {
     NO_VALID_MODE,
     POSITION,
     VELOCITY,
@@ -109,7 +109,7 @@ private:
   std::array<ControlMode, kNumMotors> control_mode_{};
   std::array<std::string, kNumMotors> joint_names_;
 
-  static const std::set<std::string> & expected_interfaces();
+  static const std::set<std::string>& expected_interfaces();
 
   // ---- Serial transport + background reader thread ----
   SerialPort serial_port_;
@@ -127,9 +127,8 @@ private:
 
   void rx_loop();
   uint32_t next_command_index();
-  bool send_command(
-    uint8_t flags, uint16_t timeout_ms, const MotorCommand & m0, const MotorCommand & m1,
-    uint32_t index);
+  bool send_command(uint8_t flags, uint16_t timeout_ms, const MotorCommand& m0,
+                    const MotorCommand& m1, uint32_t index);
   bool wait_for_command_echo(uint32_t index, double timeout_s);
 };
 

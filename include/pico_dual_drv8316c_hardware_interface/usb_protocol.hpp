@@ -23,8 +23,7 @@
 #include <cstdint>
 #include <cstring>
 
-namespace pico_dual_drv8316c_hardware_interface
-{
+namespace pico_dual_drv8316c_hardware_interface {
 
 constexpr uint8_t kMagic0 = 0xA5;
 constexpr uint8_t kMagic1 = 0x5A;
@@ -39,8 +38,7 @@ constexpr uint8_t kBothMotorsReady = kM0ReadyFlag | kM1ReadyFlag;
 #pragma pack(push, 1)
 
 // PC -> board, 53 bytes. Format string `<BBBBBIBH10fB>`.
-struct CommandPacket
-{
+struct CommandPacket {
   uint8_t magic0{kMagic0};
   uint8_t magic1{kMagic1};
   uint8_t type{kPacketTypeCommand};
@@ -63,8 +61,7 @@ struct CommandPacket
 };
 
 // Board -> PC, 61 bytes. Format string `<BBBBBHIIf10fBB>`.
-struct StatePacket
-{
+struct StatePacket {
   uint8_t magic0;
   uint8_t magic1;
   uint8_t type;
@@ -90,23 +87,22 @@ struct StatePacket
 
 #pragma pack(pop)
 
-static_assert(sizeof(CommandPacket) == 53, "CommandPacket layout must match USB_PROTOCOL.md");
-static_assert(sizeof(StatePacket) == 61, "StatePacket layout must match USB_PROTOCOL.md");
+static_assert(sizeof(CommandPacket) == 53,
+              "CommandPacket layout must match USB_PROTOCOL.md");
+static_assert(sizeof(StatePacket) == 61,
+              "StatePacket layout must match USB_PROTOCOL.md");
 
 /// XOR of every byte in [data, data + length - 1), i.e. every byte except the
 /// trailing checksum byte itself.
-inline uint8_t compute_checksum(const uint8_t * data, std::size_t length)
-{
+inline uint8_t compute_checksum(const uint8_t* data, std::size_t length) {
   uint8_t value = 0;
-  for (std::size_t i = 0; i + 1 < length; ++i)
-  {
+  for (std::size_t i = 0; i + 1 < length; ++i) {
     value ^= data[i];
   }
   return value;
 }
 
-struct MotorCommand
-{
+struct MotorCommand {
   float kp{0.0f};
   float kd{0.0f};
   float iff{0.0f};
@@ -115,10 +111,9 @@ struct MotorCommand
 };
 
 /// Builds a checksummed command packet ready to write on the wire.
-inline CommandPacket encode_command(
-  uint32_t command_index, uint8_t flags, uint16_t timeout_ms, const MotorCommand & m0,
-  const MotorCommand & m1)
-{
+inline CommandPacket encode_command(uint32_t command_index, uint8_t flags,
+                                    uint16_t timeout_ms, const MotorCommand& m0,
+                                    const MotorCommand& m1) {
   CommandPacket packet;
   packet.length = sizeof(CommandPacket);
   packet.command_index = command_index;
@@ -134,36 +129,30 @@ inline CommandPacket encode_command(
   packet.m1_iff = m1.iff;
   packet.m1_q_target = m1.q_target;
   packet.m1_v_target = m1.v_target;
-  packet.checksum = compute_checksum(
-    reinterpret_cast<const uint8_t *>(&packet), sizeof(CommandPacket));
+  packet.checksum = compute_checksum(reinterpret_cast<const uint8_t*>(&packet),
+                                     sizeof(CommandPacket));
   return packet;
 }
 
 /// Validates the fixed header fields and checksum of a candidate state frame.
-inline bool is_valid_state_packet(const uint8_t * data, std::size_t length)
-{
-  if (length != sizeof(StatePacket))
-  {
+inline bool is_valid_state_packet(const uint8_t* data, std::size_t length) {
+  if (length != sizeof(StatePacket)) {
     return false;
   }
-  if (data[0] != kMagic0 || data[1] != kMagic1)
-  {
+  if (data[0] != kMagic0 || data[1] != kMagic1) {
     return false;
   }
-  if (data[2] != kPacketTypeState || data[3] != kProtocolVersion)
-  {
+  if (data[2] != kPacketTypeState || data[3] != kProtocolVersion) {
     return false;
   }
-  if (data[4] != sizeof(StatePacket))
-  {
+  if (data[4] != sizeof(StatePacket)) {
     return false;
   }
   return compute_checksum(data, length) == data[length - 1];
 }
 
 /// Reinterprets an already-validated buffer as a StatePacket.
-inline StatePacket decode_state(const uint8_t * data)
-{
+inline StatePacket decode_state(const uint8_t* data) {
   StatePacket packet;
   std::memcpy(&packet, data, sizeof(StatePacket));
   return packet;
