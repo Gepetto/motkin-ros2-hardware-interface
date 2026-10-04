@@ -20,25 +20,23 @@
 #include <stdexcept>
 #include <string>
 
-namespace pico_dual_drv8316c_hardware_interface
-{
+namespace pico_dual_drv8316c_hardware_interface {
 
 /// Minimal raw POSIX serial (termios) transport for the USB-CDC link exposed
 /// by the pico_dual_PMSM_BUG79100G_DRV8316C firmware. The board ignores the
 /// requested baud rate (USB CDC), but a real line coding is configured
 /// anyway so the port behaves consistently across platforms.
-class SerialPort
-{
-public:
+class SerialPort {
+ public:
   SerialPort() = default;
   ~SerialPort();
 
-  SerialPort(const SerialPort &) = delete;
-  SerialPort & operator=(const SerialPort &) = delete;
+  SerialPort(const SerialPort&) = delete;
+  SerialPort& operator=(const SerialPort&) = delete;
 
   /// Opens `device` and configures it as an 8N1 raw, non-blocking port.
   /// Throws std::runtime_error on failure.
-  void open(const std::string & device, unsigned int baud_rate);
+  void open(const std::string& device, unsigned int baud_rate);
 
   void close();
 
@@ -46,12 +44,12 @@ public:
 
   /// Writes the full buffer, retrying on short writes. Returns false if the
   /// port is closed or a write error occurs.
-  bool write(const uint8_t * data, std::size_t length);
+  bool write(const uint8_t* data, std::size_t length);
 
   /// Non-blocking read of whatever is currently available, up to
   /// `max_length` bytes. Returns the number of bytes read (0 if none are
   /// available), or -1 on error.
-  int read_available(uint8_t * buffer, std::size_t max_length);
+  int read_available(uint8_t* buffer, std::size_t max_length);
 
   /// Finds a device matching the platform's default USB-serial locations
   /// (/dev/serial/by-id/*, then /dev/ttyACM*, then /dev/ttyUSB*), mirroring
@@ -59,7 +57,7 @@ public:
   /// empty string if none is found.
   static std::string find_default_device();
 
-private:
+ private:
   int fd_{-1};
 };
 
