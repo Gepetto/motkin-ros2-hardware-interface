@@ -25,11 +25,13 @@ target_include_directories(
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  hardware_interface::hardware_interface
-  pluginlib::pluginlib
-  rclcpp::rclcpp
-  rclcpp_lifecycle::rclcpp_lifecycle
+target_link_libraries(
+    ${PROJECT_NAME}
+    PUBLIC
+        hardware_interface::hardware_interface
+        pluginlib::pluginlib
+        rclcpp::rclcpp
+        rclcpp_lifecycle::rclcpp_lifecycle
 )
 
 pluginlib_export_plugin_description_file(hardware_interface pico_dual_drv8316c_hardware_interface.xml)
