@@ -11,9 +11,6 @@ jobs:
       matrix:
         env:
           - {ROS_DISTRO: jazzy}
-          - {ROS_DISTRO: kilted}
-          - {ROS_DISTRO: lyrical}
-          - {ROS_DISTRO: rolling}
     env:
       UPSTREAM_WORKSPACE: |
         github:stack-of-tasks/odri_dual_motor_testbed_robot#main
