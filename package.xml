@@ -10,8 +10,9 @@
     driver board).
   </description>
   <maintainer email="olivier.stasse@laas.fr">Olivier Stasse</maintainer>
-  <author>Olivier Stasse</author>
   <license>Apache-2.0</license>
+
+  <author>Olivier Stasse</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
