@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MOTKIN_ROS2_HARDWARE_INTERFACE__MOTKIN_DUAL_DRV8316C_SYSTEM_HPP_
-#define MOTKIN_ROS2_HARDWARE_INTERFACE__MOTKIN_DUAL_DRV8316C_SYSTEM_HPP_
+#ifndef MOTKIN_ROS2_HARDWARE_INTERFACE__MOTKIN_SYSTEM_HPP_
+#define MOTKIN_ROS2_HARDWARE_INTERFACE__MOTKIN_SYSTEM_HPP_
 
 #include <array>
 #include <atomic>
@@ -133,4 +133,4 @@ class SystemMotkinHardware : public hardware_interface::SystemInterface {
 
 }  // namespace motkin_ros2_hardware_interface
 
-#endif  // MOTKIN_ROS2_HARDWARE_INTERFACE__MOTKIN_DUAL_DRV8316C_SYSTEM_HPP_
+#endif  // MOTKIN_ROS2_HARDWARE_INTERFACE__MOTKIN_SYSTEM_HPP_
