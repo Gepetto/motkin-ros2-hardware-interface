@@ -1,7 +1,7 @@
 # motkin_ros2_hardware_interface
 
 `ros2_control` `SystemInterface` hardware plugin for the
-[`pico_dual_PMSM_BUG79100G_DRV8316C`](https://github.com/thomasfla/pico_dual_PMSM_BUG79100G_DRV8316C)
+[`motkin-pcb`](https://github.com/Gepetto/MOTKIN-PCB)
 board: a Raspberry Pi Pico driving two PMSM motors through BUG79100G quadrature
 readers and DRV8316C gate drivers, exposed to the PC over USB-CDC with the
 binary protocol documented in `firmware/USB_PROTOCOL.md` of that repository.
@@ -9,7 +9,7 @@ binary protocol documented in `firmware/USB_PROTOCOL.md` of that repository.
 It is the real-hardware counterpart to `motkin_dual_motor_testbed_gazebo` /
 `ros2_hardware_interface_odri`: same `ros2_control` integration pattern
 (xacro macro -> `<ros2_control>` block -> `hardware_interface::SystemInterface`
-plugin), but talking to the pico board over a serial link instead of Gazebo
+plugin), but talking to the motkin board over a serial link instead of Gazebo
 or an ODRI master board over Ethernet.
 
 ## Interfaces
@@ -55,9 +55,9 @@ Set on the `<hardware>` block in the `ros2_control` xacro:
 ## Usage
 
 ```xml
-<xacro:include filename="$(find motkin_ros2_hardware_interface)/ros2_control/system_pico_dual_drv8316c.ros2_control.xacro" />
-<xacro:pico_dual_drv8316c_ros2_control
-  name="pico_dual_drv8316c"
+<xacro:include filename="$(find motkin_ros2_hardware_interface)/ros2_control/system_motkin.ros2_control.xacro" />
+<xacro:motkin_ros2_control
+  name="motkin"
   left_joint_name="motkin_dm_tb_kt_left_joint"
   right_joint_name="motkin_dm_tb_kt_right_joint"
   serial_port="/dev/ttyACM0" />

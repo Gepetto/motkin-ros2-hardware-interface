@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Binary layout mirrors firmware/USB_PROTOCOL.md from
-// https://github.com/tflayols/pico_dual_PMSM_BUG79100G_DRV8316C (version 2).
+// https://github.com/Gepetto/MOTKIN-PCB (version 2).
 // Python reference: software/tools/usb_motor_protocol.py.
 
 #ifndef MOTKIN_ROS2_HARDWARE_INTERFACE__USB_PROTOCOL_HPP_

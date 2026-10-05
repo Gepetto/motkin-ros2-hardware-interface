@@ -1,10 +1,10 @@
 <library path="motkin_ros2_hardware_interface">
-  <class name="motkin_ros2_hardware_interface/SystemPicoDualDrv8316CHardware"
-         type="motkin_ros2_hardware_interface::SystemPicoDualDrv8316CHardware"
+  <class name="motkin_ros2_hardware_interface/SystemMotkinHardware"
+         type="motkin_ros2_hardware_interface::SystemMotkinHardware"
          base_class_type="hardware_interface::SystemInterface">
     <description>
       Drives a dual-motor testbed (2 joints) over the USB-CDC binary
-      protocol exposed by the pico_dual_PMSM_BUG79100G_DRV8316C firmware.
+      protocol exposed by the motkin firmware.
       Each joint exposes position/velocity/effort/gain_kp/gain_kd command
       and state interfaces matching the board's PD + current-feedforward
       control law.

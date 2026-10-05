@@ -11,12 +11,7 @@ find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 
-add_library(
-    ${PROJECT_NAME}
-    SHARED
-    src/serial_port.cpp
-    src/pico_dual_drv8316c_system.cpp
-)
+add_library(${PROJECT_NAME} SHARED src/serial_port.cpp src/motkin_system.cpp)
 
 target_include_directories(
     ${PROJECT_NAME}

@@ -23,7 +23,7 @@
 namespace motkin_ros2_hardware_interface {
 
 /// Minimal raw POSIX serial (termios) transport for the USB-CDC link exposed
-/// by the pico_dual_PMSM_BUG79100G_DRV8316C firmware. The board ignores the
+/// by the motkin firmware. The board ignores the
 /// requested baud rate (USB CDC), but a real line coding is configured
 /// anyway so the port behaves consistently across platforms.
 class SerialPort {

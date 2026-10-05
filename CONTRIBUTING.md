@@ -1,5 +1,5 @@
 # Contributing Guidelines
-Thank you for your interest in contributing to `pico_dual_drv8316c_ros2_hardware_interface`.
+Thank you for your interest in contributing to `motkin_ros2_hardware_interface`.
 Whether it's a bug report, new feature, correction, or additional
 documentation, we greatly value feedback and contributions from our community.
 
@@ -63,6 +63,6 @@ be under the Apache 2 License, as dictated by that
    with Licensor regarding such Contributions.
 ~~~
 
-[issues]: https://github.com/gepetto/pico_dual_drv8316c_ros2_hardware_interface/issues
-[closed-issues]: https://github.com/gepetto/pico_dual_drv8316c_ros2_hardware_interface/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aclosed%20
-[help-wanted]: https://github.com/gepetto/pico_dual_drv8316c_ros2_hardware_interface/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22
+[issues]: https://github.com/gepetto/motkin-ros2-hardware-interface/issues
+[closed-issues]: https://github.com/gepetto/motkin-ros2-hardware-interface/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aclosed%20
+[help-wanted]: https://github.com/gepetto/motkin-ros2-hardware-interface/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22
