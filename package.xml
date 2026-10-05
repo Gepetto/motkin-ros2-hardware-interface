@@ -6,8 +6,7 @@
   <description>
     ros2_control SystemInterface hardware plugin that drives a dual-motor
     testbed through the Raspberry Pi Pico USB-CDC binary protocol implemented
-    by pico_dual_PMSM_BUG79100G_DRV8316C (dual BUG79100G encoder + DRV8316C
-    driver board).
+    by motkin (dual BUG79100G encoder + DRV8316C driver board).
   </description>
   <maintainer email="olivier.stasse@laas.fr">Olivier Stasse</maintainer>
   <license>Apache-2.0</license>
