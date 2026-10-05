@@ -1,4 +1,4 @@
-# pico_dual_drv8316c_ros2_hardware_interface
+# motkin_ros2_hardware_interface
 
 `ros2_control` `SystemInterface` hardware plugin for the
 [`pico_dual_PMSM_BUG79100G_DRV8316C`](https://github.com/thomasfla/pico_dual_PMSM_BUG79100G_DRV8316C)
@@ -55,7 +55,7 @@ Set on the `<hardware>` block in the `ros2_control` xacro:
 ## Usage
 
 ```xml
-<xacro:include filename="$(find pico_dual_drv8316c_ros2_hardware_interface)/ros2_control/system_pico_dual_drv8316c.ros2_control.xacro" />
+<xacro:include filename="$(find motkin_ros2_hardware_interface)/ros2_control/system_pico_dual_drv8316c.ros2_control.xacro" />
 <xacro:pico_dual_drv8316c_ros2_control
   name="pico_dual_drv8316c"
   left_joint_name="motkin_dm_tb_kt_left_joint"

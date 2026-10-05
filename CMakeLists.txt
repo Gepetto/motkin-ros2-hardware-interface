@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(pico_dual_drv8316c_ros2_hardware_interface)
+project(motkin_ros2_hardware_interface)
 
 find_package(ros2_control_cmake REQUIRED)
 set_compiler_options()
@@ -34,7 +34,7 @@ target_link_libraries(
         rclcpp_lifecycle::rclcpp_lifecycle
 )
 
-pluginlib_export_plugin_description_file(hardware_interface pico_dual_drv8316c_hardware_interface.xml)
+pluginlib_export_plugin_description_file(hardware_interface motkin_ros2_hardware_interface.xml)
 
 install(DIRECTORY include/ DESTINATION include/${PROJECT_NAME})
 

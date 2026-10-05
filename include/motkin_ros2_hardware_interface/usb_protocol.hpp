@@ -16,14 +16,14 @@
 // https://github.com/tflayols/pico_dual_PMSM_BUG79100G_DRV8316C (version 2).
 // Python reference: software/tools/usb_motor_protocol.py.
 
-#ifndef PICO_DUAL_DRV8316C_HARDWARE_INTERFACE__USB_PROTOCOL_HPP_
-#define PICO_DUAL_DRV8316C_HARDWARE_INTERFACE__USB_PROTOCOL_HPP_
+#ifndef MOTKIN_ROS2_HARDWARE_INTERFACE__USB_PROTOCOL_HPP_
+#define MOTKIN_ROS2_HARDWARE_INTERFACE__USB_PROTOCOL_HPP_
 
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 
-namespace pico_dual_drv8316c_hardware_interface {
+namespace motkin_ros2_hardware_interface {
 
 constexpr uint8_t kMagic0 = 0xA5;
 constexpr uint8_t kMagic1 = 0x5A;
@@ -158,6 +158,6 @@ inline StatePacket decode_state(const uint8_t* data) {
   return packet;
 }
 
-}  // namespace pico_dual_drv8316c_hardware_interface
+}  // namespace motkin_ros2_hardware_interface
 
-#endif  // PICO_DUAL_DRV8316C_HARDWARE_INTERFACE__USB_PROTOCOL_HPP_
+#endif  // MOTKIN_ROS2_HARDWARE_INTERFACE__USB_PROTOCOL_HPP_

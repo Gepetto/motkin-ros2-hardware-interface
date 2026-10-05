@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "pico_dual_drv8316c_hardware_interface/pico_dual_drv8316c_system.hpp"
+#include "motkin_ros2_hardware_interface/pico_dual_drv8316c_system.hpp"
 
 #include <chrono>
 #include <cstdlib>
@@ -22,7 +22,7 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-namespace pico_dual_drv8316c_hardware_interface {
+namespace motkin_ros2_hardware_interface {
 
 namespace {
 rclcpp::Logger logger() {
@@ -443,10 +443,10 @@ void SystemPicoDualDrv8316CHardware::rx_loop() {
   }
 }
 
-}  // namespace pico_dual_drv8316c_hardware_interface
+}  // namespace motkin_ros2_hardware_interface
 
 #include "pluginlib/class_list_macros.hpp"
 
 PLUGINLIB_EXPORT_CLASS(
-    pico_dual_drv8316c_hardware_interface::SystemPicoDualDrv8316CHardware,
+    motkin_ros2_hardware_interface::SystemPicoDualDrv8316CHardware,
     hardware_interface::SystemInterface)

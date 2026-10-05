@@ -22,7 +22,7 @@
 
     <ros2_control name="${name}" type="system">
       <hardware>
-        <plugin>pico_dual_drv8316c_hardware_interface/SystemPicoDualDrv8316CHardware</plugin>
+        <plugin>motkin_ros2_hardware_interface/SystemPicoDualDrv8316CHardware</plugin>
         <param name="serial_port">${serial_port}</param>
         <param name="baud_rate">${baud_rate}</param>
         <param name="timeout_ms">${timeout_ms}</param>
