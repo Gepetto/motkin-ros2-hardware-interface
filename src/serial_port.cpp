@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "pico_dual_drv8316c_hardware_interface/serial_port.hpp"
+#include "motkin_ros2_hardware_interface/serial_port.hpp"
 
 #include <fcntl.h>
 #include <termios.h>
@@ -24,7 +24,7 @@
 #include <filesystem>
 #include <vector>
 
-namespace pico_dual_drv8316c_hardware_interface {
+namespace motkin_ros2_hardware_interface {
 
 namespace {
 
@@ -165,4 +165,4 @@ std::string SerialPort::find_default_device() {
   return candidates.front();
 }
 
-}  // namespace pico_dual_drv8316c_hardware_interface
+}  // namespace motkin_ros2_hardware_interface

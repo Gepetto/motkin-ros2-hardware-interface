@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>pico_dual_drv8316c_ros2_hardware_interface</name>
+  <name>motkin_ros2_hardware_interface</name>
   <version>0.1.0</version>
   <description>
     ros2_control SystemInterface hardware plugin that drives a dual-motor
@@ -27,7 +27,7 @@
   <!-- Used only by the example bring-up launch file in bringup/ -->
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>joint_state_broadcaster</exec_depend>
-  <exec_depend>odri_forward_command_controller</exec_depend>
+  <exec_depend>motkin_forward_command_controller</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>xacro</exec_depend>
 

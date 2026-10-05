@@ -3,16 +3,16 @@
 
   <!--
     Drop-in real-hardware alternative to
-    odri_dual_motor_testbed_description's
+    motkin_dual_motor_testbed_description's
     system_dual_motor_testbed.ros2_control.xacro: same joint names and same
     position/velocity/effort/gain_kp/gain_kd interfaces, but backed by a
-    pico_dual_PMSM_BUG79100G_DRV8316C board over USB instead of an ODRI
+    motkin board over USB instead of an ODRI
     master board over Ethernet or Gazebo.
 
     serial_port: left empty to auto-detect (/dev/serial/by-id, then
     /dev/ttyACM*, then /dev/ttyUSB*), or set explicitly, e.g. /dev/ttyACM0.
   -->
-  <xacro:macro name="pico_dual_drv8316c_ros2_control"
+  <xacro:macro name="motkin_ros2_control"
                params="name
                        left_joint_name:=motor_1
                        right_joint_name:=motor_2
@@ -22,7 +22,7 @@
 
     <ros2_control name="${name}" type="system">
       <hardware>
-        <plugin>pico_dual_drv8316c_hardware_interface/SystemPicoDualDrv8316CHardware</plugin>
+        <plugin>motkin_ros2_hardware_interface/SystemMotkinHardware</plugin>
         <param name="serial_port">${serial_port}</param>
         <param name="baud_rate">${baud_rate}</param>
         <param name="timeout_ms">${timeout_ms}</param>

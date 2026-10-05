@@ -1,15 +1,15 @@
-# pico_dual_drv8316c_ros2_hardware_interface
+# motkin_ros2_hardware_interface
 
 `ros2_control` `SystemInterface` hardware plugin for the
-[`pico_dual_PMSM_BUG79100G_DRV8316C`](https://github.com/thomasfla/pico_dual_PMSM_BUG79100G_DRV8316C)
+[`motkin-pcb`](https://github.com/Gepetto/MOTKIN-PCB)
 board: a Raspberry Pi Pico driving two PMSM motors through BUG79100G quadrature
 readers and DRV8316C gate drivers, exposed to the PC over USB-CDC with the
 binary protocol documented in `firmware/USB_PROTOCOL.md` of that repository.
 
-It is the real-hardware counterpart to `odri_dual_motor_testbed_gazebo` /
+It is the real-hardware counterpart to `motkin_dual_motor_testbed_gazebo` /
 `ros2_hardware_interface_odri`: same `ros2_control` integration pattern
 (xacro macro -> `<ros2_control>` block -> `hardware_interface::SystemInterface`
-plugin), but talking to the pico board over a serial link instead of Gazebo
+plugin), but talking to the motkin board over a serial link instead of Gazebo
 or an ODRI master board over Ethernet.
 
 ## Interfaces
@@ -17,7 +17,7 @@ or an ODRI master board over Ethernet.
 Each of the two joints (motor `M0` and `M1`, in the order the `<joint>` tags
 appear under `<ros2_control>`) exposes the same five command/state
 interfaces used by `ros2_hardware_interface_odri`, so the existing
-`odri_forward_command_controller` works unmodified:
+`motkin_forward_command_controller` works unmodified:
 
 | Interface   | Direction | Firmware field           | Unit          |
 | ----------- | --------- | ------------------------ | ------------- |
@@ -38,7 +38,7 @@ whichever of the five command interfaces a controller claims, the values
 currently held in the *other*, unclaimed interfaces are still sent as-is
 (and default to `0.0`). In particular, a plain `forward_position_controller`
 that only claims `position` will produce **zero torque**, because
-`gain_kp`/`gain_kd` stay at `0`. Use `odri_forward_command_controller` (or
+`gain_kp`/`gain_kd` stay at `0`. Use `motkin_forward_command_controller` (or
 any controller that sets `gain_kp`/`gain_kd` alongside the targets) for
 actual motion.
 
@@ -55,19 +55,19 @@ Set on the `<hardware>` block in the `ros2_control` xacro:
 ## Usage
 
 ```xml
-<xacro:include filename="$(find pico_dual_drv8316c_ros2_hardware_interface)/ros2_control/system_pico_dual_drv8316c.ros2_control.xacro" />
-<xacro:pico_dual_drv8316c_ros2_control
-  name="pico_dual_drv8316c"
-  left_joint_name="odri_dm_tb_kt_left_joint"
-  right_joint_name="odri_dm_tb_kt_right_joint"
+<xacro:include filename="$(find motkin_ros2_hardware_interface)/ros2_control/system_motkin.ros2_control.xacro" />
+<xacro:motkin_ros2_control
+  name="motkin"
+  left_joint_name="motkin_dm_tb_kt_left_joint"
+  right_joint_name="motkin_dm_tb_kt_right_joint"
   serial_port="/dev/ttyACM0" />
 ```
 
 To use this hardware interface in place of Gazebo or the ODRI master board
-for `odri_dual_motor_testbed`, include this macro from
-`odri_dual_motor_testbed_description` instead of
+for `motkin_dual_motor_testbed`, include this macro from
+`motkin_dual_motor_testbed_description` instead of
 `system_dual_motor_testbed.ros2_control.xacro` — the joint names and command
-interfaces match, so `odri_dual_motor_testbed_bringup`'s existing controllers
+interfaces match, so `motkin_dual_motor_testbed_bringup`'s existing controllers
 config keeps working.
 
 

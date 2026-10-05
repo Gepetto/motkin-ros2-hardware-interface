@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PICO_DUAL_DRV8316C_HARDWARE_INTERFACE__SERIAL_PORT_HPP_
-#define PICO_DUAL_DRV8316C_HARDWARE_INTERFACE__SERIAL_PORT_HPP_
+#ifndef MOTKIN_ROS2_HARDWARE_INTERFACE__SERIAL_PORT_HPP_
+#define MOTKIN_ROS2_HARDWARE_INTERFACE__SERIAL_PORT_HPP_
 
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
 #include <string>
 
-namespace pico_dual_drv8316c_hardware_interface {
+namespace motkin_ros2_hardware_interface {
 
 /// Minimal raw POSIX serial (termios) transport for the USB-CDC link exposed
-/// by the pico_dual_PMSM_BUG79100G_DRV8316C firmware. The board ignores the
+/// by the motkin firmware. The board ignores the
 /// requested baud rate (USB CDC), but a real line coding is configured
 /// anyway so the port behaves consistently across platforms.
 class SerialPort {
@@ -61,6 +61,6 @@ class SerialPort {
   int fd_{-1};
 };
 
-}  // namespace pico_dual_drv8316c_hardware_interface
+}  // namespace motkin_ros2_hardware_interface
 
-#endif  // PICO_DUAL_DRV8316C_HARDWARE_INTERFACE__SERIAL_PORT_HPP_
+#endif  // MOTKIN_ROS2_HARDWARE_INTERFACE__SERIAL_PORT_HPP_

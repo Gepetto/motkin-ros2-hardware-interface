@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PICO_DUAL_DRV8316C_HARDWARE_INTERFACE__PICO_DUAL_DRV8316C_SYSTEM_HPP_
-#define PICO_DUAL_DRV8316C_HARDWARE_INTERFACE__PICO_DUAL_DRV8316C_SYSTEM_HPP_
+#ifndef MOTKIN_ROS2_HARDWARE_INTERFACE__PICO_DUAL_DRV8316C_SYSTEM_HPP_
+#define MOTKIN_ROS2_HARDWARE_INTERFACE__PICO_DUAL_DRV8316C_SYSTEM_HPP_
 
 #include <array>
 #include <atomic>
@@ -29,13 +29,13 @@
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
-#include "pico_dual_drv8316c_hardware_interface/serial_port.hpp"
-#include "pico_dual_drv8316c_hardware_interface/usb_protocol.hpp"
+#include "motkin_ros2_hardware_interface/serial_port.hpp"
+#include "motkin_ros2_hardware_interface/usb_protocol.hpp"
 #include "rclcpp/clock.hpp"
 #include "rclcpp/macros.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 
-namespace pico_dual_drv8316c_hardware_interface {
+namespace motkin_ros2_hardware_interface {
 
 constexpr const char* kHwIfGainKp = "gain_kp";
 constexpr const char* kHwIfGainKd = "gain_kd";
@@ -132,6 +132,6 @@ class SystemPicoDualDrv8316CHardware
   bool wait_for_command_echo(uint32_t index, double timeout_s);
 };
 
-}  // namespace pico_dual_drv8316c_hardware_interface
+}  // namespace motkin_ros2_hardware_interface
 
-#endif  // PICO_DUAL_DRV8316C_HARDWARE_INTERFACE__PICO_DUAL_DRV8316C_SYSTEM_HPP_
+#endif  // MOTKIN_ROS2_HARDWARE_INTERFACE__PICO_DUAL_DRV8316C_SYSTEM_HPP_

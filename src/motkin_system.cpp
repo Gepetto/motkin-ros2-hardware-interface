@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "pico_dual_drv8316c_hardware_interface/pico_dual_drv8316c_system.hpp"
+#include "motkin_ros2_hardware_interface/motkin_system.hpp"
 
 #include <chrono>
 #include <cstdlib>
@@ -22,12 +22,10 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-namespace pico_dual_drv8316c_hardware_interface {
+namespace motkin_ros2_hardware_interface {
 
 namespace {
-rclcpp::Logger logger() {
-  return rclcpp::get_logger("SystemPicoDualDrv8316CHardware");
-}
+rclcpp::Logger logger() { return rclcpp::get_logger("SystemMotkinHardware"); }
 
 std::string get_param_or(const hardware_interface::HardwareInfo& info,
                          const std::string& key,
@@ -38,15 +36,14 @@ std::string get_param_or(const hardware_interface::HardwareInfo& info,
 
 }  // namespace
 
-const std::set<std::string>&
-SystemPicoDualDrv8316CHardware::expected_interfaces() {
+const std::set<std::string>& SystemMotkinHardware::expected_interfaces() {
   static const std::set<std::string> interfaces{
       hardware_interface::HW_IF_POSITION, hardware_interface::HW_IF_VELOCITY,
       hardware_interface::HW_IF_EFFORT, kHwIfGainKp, kHwIfGainKd};
   return interfaces;
 }
 
-hardware_interface::CallbackReturn SystemPicoDualDrv8316CHardware::on_init(
+hardware_interface::CallbackReturn SystemMotkinHardware::on_init(
     const hardware_interface::HardwareComponentInterfaceParams& info) {
   if (hardware_interface::SystemInterface::on_init(info) !=
       hardware_interface::CallbackReturn::SUCCESS) {
@@ -72,7 +69,7 @@ hardware_interface::CallbackReturn SystemPicoDualDrv8316CHardware::on_init(
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::CallbackReturn SystemPicoDualDrv8316CHardware::on_configure(
+hardware_interface::CallbackReturn SystemMotkinHardware::on_configure(
     const rclcpp_lifecycle::State& /*previous_state*/) {
   for (std::size_t i = 0; i < kNumMotors; ++i) {
     const hardware_interface::ComponentInfo& joint = info_.joints[i];
@@ -120,7 +117,7 @@ hardware_interface::CallbackReturn SystemPicoDualDrv8316CHardware::on_configure(
 }
 
 std::vector<hardware_interface::StateInterface>
-SystemPicoDualDrv8316CHardware::export_state_interfaces() {
+SystemMotkinHardware::export_state_interfaces() {
   std::vector<hardware_interface::StateInterface> state_interfaces;
   for (std::size_t i = 0; i < kNumMotors; ++i) {
     state_interfaces.emplace_back(joint_names_[i],
@@ -141,7 +138,7 @@ SystemPicoDualDrv8316CHardware::export_state_interfaces() {
 }
 
 std::vector<hardware_interface::CommandInterface>
-SystemPicoDualDrv8316CHardware::export_command_interfaces() {
+SystemMotkinHardware::export_command_interfaces() {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
   for (std::size_t i = 0; i < kNumMotors; ++i) {
     command_interfaces.emplace_back(joint_names_[i],
@@ -162,7 +159,7 @@ SystemPicoDualDrv8316CHardware::export_command_interfaces() {
 }
 
 hardware_interface::return_type
-SystemPicoDualDrv8316CHardware::prepare_command_mode_switch(
+SystemMotkinHardware::prepare_command_mode_switch(
     const std::vector<std::string>& start_interfaces,
     const std::vector<std::string>& stop_interfaces) {
   std::array<ControlMode, kNumMotors> new_modes{};
@@ -208,7 +205,7 @@ SystemPicoDualDrv8316CHardware::prepare_command_mode_switch(
   return hardware_interface::return_type::OK;
 }
 
-hardware_interface::CallbackReturn SystemPicoDualDrv8316CHardware::on_activate(
+hardware_interface::CallbackReturn SystemMotkinHardware::on_activate(
     const rclcpp_lifecycle::State& /*previous_state*/) {
   std::string device = serial_device_;
   if (device.empty()) {
@@ -228,7 +225,7 @@ hardware_interface::CallbackReturn SystemPicoDualDrv8316CHardware::on_activate(
                  ex.what());
     return hardware_interface::CallbackReturn::ERROR;
   }
-  RCLCPP_INFO(logger(), "Opened pico USB link on '%s'.", device.c_str());
+  RCLCPP_INFO(logger(), "Opened motkin USB link on '%s'.", device.c_str());
 
   {
     std::lock_guard<std::mutex> lock(state_mutex_);
@@ -238,7 +235,7 @@ hardware_interface::CallbackReturn SystemPicoDualDrv8316CHardware::on_activate(
   command_index_ = 1;
 
   rx_running_ = true;
-  rx_thread_ = std::thread(&SystemPicoDualDrv8316CHardware::rx_loop, this);
+  rx_thread_ = std::thread(&SystemMotkinHardware::rx_loop, this);
 
   // Recommended startup sequence (USB_PROTOCOL.md): send a zero-gain,
   // zero-timeout command and wait for core1 to echo its command index
@@ -273,8 +270,7 @@ hardware_interface::CallbackReturn SystemPicoDualDrv8316CHardware::on_activate(
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::CallbackReturn
-SystemPicoDualDrv8316CHardware::on_deactivate(
+hardware_interface::CallbackReturn SystemMotkinHardware::on_deactivate(
     const rclcpp_lifecycle::State& /*previous_state*/) {
   if (serial_port_.is_open()) {
     // flags = 0 forces zero Iq on both motors regardless of control mode.
@@ -294,7 +290,7 @@ SystemPicoDualDrv8316CHardware::on_deactivate(
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::return_type SystemPicoDualDrv8316CHardware::read(
+hardware_interface::return_type SystemMotkinHardware::read(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
   StatePacket state;
   bool has_state;
@@ -322,7 +318,7 @@ hardware_interface::return_type SystemPicoDualDrv8316CHardware::read(
   return hardware_interface::return_type::OK;
 }
 
-hardware_interface::return_type SystemPicoDualDrv8316CHardware::write(
+hardware_interface::return_type SystemMotkinHardware::write(
     const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/) {
   // The firmware runs a single PD + feedforward law per motor:
   //   iq = iff + kp * (q_target - q) + kd * (v_target - v)
@@ -357,7 +353,7 @@ hardware_interface::return_type SystemPicoDualDrv8316CHardware::write(
   return hardware_interface::return_type::OK;
 }
 
-uint32_t SystemPicoDualDrv8316CHardware::next_command_index() {
+uint32_t SystemMotkinHardware::next_command_index() {
   command_index_ = (command_index_ + 1) & 0xFFFFFFFFu;
   if (command_index_ == 0) {
     command_index_ = 1;
@@ -365,18 +361,17 @@ uint32_t SystemPicoDualDrv8316CHardware::next_command_index() {
   return command_index_;
 }
 
-bool SystemPicoDualDrv8316CHardware::send_command(uint8_t flags,
-                                                  uint16_t timeout_ms,
-                                                  const MotorCommand& m0,
-                                                  const MotorCommand& m1,
-                                                  uint32_t index) {
+bool SystemMotkinHardware::send_command(uint8_t flags, uint16_t timeout_ms,
+                                        const MotorCommand& m0,
+                                        const MotorCommand& m1,
+                                        uint32_t index) {
   CommandPacket packet = encode_command(index, flags, timeout_ms, m0, m1);
   return serial_port_.write(reinterpret_cast<const uint8_t*>(&packet),
                             sizeof(packet));
 }
 
-bool SystemPicoDualDrv8316CHardware::wait_for_command_echo(uint32_t index,
-                                                           double timeout_s) {
+bool SystemMotkinHardware::wait_for_command_echo(uint32_t index,
+                                                 double timeout_s) {
   std::unique_lock<std::mutex> lock(state_mutex_);
   auto deadline =
       std::chrono::steady_clock::now() +
@@ -387,7 +382,7 @@ bool SystemPicoDualDrv8316CHardware::wait_for_command_echo(uint32_t index,
   });
 }
 
-void SystemPicoDualDrv8316CHardware::rx_loop() {
+void SystemMotkinHardware::rx_loop() {
   std::vector<uint8_t> buffer;
   buffer.reserve(4 * sizeof(StatePacket));
   uint8_t chunk[256];
@@ -443,10 +438,9 @@ void SystemPicoDualDrv8316CHardware::rx_loop() {
   }
 }
 
-}  // namespace pico_dual_drv8316c_hardware_interface
+}  // namespace motkin_ros2_hardware_interface
 
 #include "pluginlib/class_list_macros.hpp"
 
-PLUGINLIB_EXPORT_CLASS(
-    pico_dual_drv8316c_hardware_interface::SystemPicoDualDrv8316CHardware,
-    hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(motkin_ros2_hardware_interface::SystemMotkinHardware,
+                       hardware_interface::SystemInterface)

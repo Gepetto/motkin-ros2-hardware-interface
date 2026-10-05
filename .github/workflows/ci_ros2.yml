@@ -13,8 +13,8 @@ jobs:
           - {ROS_DISTRO: jazzy}
     env:
       UPSTREAM_WORKSPACE: |
-        github:stack-of-tasks/odri_dual_motor_testbed_robot#main
-        github:stack-of-tasks/odri_gz_ros2_control#main
+        github:gepetto/motkin-dual-motor-testbed-robot#main
+        github:gepetto/motkin-gz-ros2-control#main
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
