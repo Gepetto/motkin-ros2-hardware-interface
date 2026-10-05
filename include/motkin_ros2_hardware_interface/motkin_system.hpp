@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MOTKIN_ROS2_HARDWARE_INTERFACE__PICO_DUAL_DRV8316C_SYSTEM_HPP_
-#define MOTKIN_ROS2_HARDWARE_INTERFACE__PICO_DUAL_DRV8316C_SYSTEM_HPP_
+#ifndef MOTKIN_ROS2_HARDWARE_INTERFACE__MOTKIN_DUAL_DRV8316C_SYSTEM_HPP_
+#define MOTKIN_ROS2_HARDWARE_INTERFACE__MOTKIN_DUAL_DRV8316C_SYSTEM_HPP_
 
 #include <array>
 #include <atomic>
@@ -55,10 +55,9 @@ struct JointValues {
 /// in the order the joints appear under the <ros2_control> tag.
 constexpr std::size_t kNumMotors = 2;
 
-class SystemPicoDualDrv8316CHardware
-    : public hardware_interface::SystemInterface {
+class SystemMotkinHardware : public hardware_interface::SystemInterface {
  public:
-  RCLCPP_SHARED_PTR_DEFINITIONS(SystemPicoDualDrv8316CHardware)
+  RCLCPP_SHARED_PTR_DEFINITIONS(SystemMotkinHardware)
 
   hardware_interface::CallbackReturn on_init(
       const hardware_interface::HardwareComponentInterfaceParams& info)
@@ -134,4 +133,4 @@ class SystemPicoDualDrv8316CHardware
 
 }  // namespace motkin_ros2_hardware_interface
 
-#endif  // MOTKIN_ROS2_HARDWARE_INTERFACE__PICO_DUAL_DRV8316C_SYSTEM_HPP_
+#endif  // MOTKIN_ROS2_HARDWARE_INTERFACE__MOTKIN_DUAL_DRV8316C_SYSTEM_HPP_
