@@ -27,7 +27,7 @@
   <!-- Used only by the example bring-up launch file in bringup/ -->
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>joint_state_broadcaster</exec_depend>
-  <exec_depend>odri_forward_command_controller</exec_depend>
+  <exec_depend>motkin_forward_command_controller</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>xacro</exec_depend>
 

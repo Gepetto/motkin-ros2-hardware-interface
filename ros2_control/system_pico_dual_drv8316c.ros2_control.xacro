@@ -3,7 +3,7 @@
 
   <!--
     Drop-in real-hardware alternative to
-    odri_dual_motor_testbed_description's
+    motkin_dual_motor_testbed_description's
     system_dual_motor_testbed.ros2_control.xacro: same joint names and same
     position/velocity/effort/gain_kp/gain_kd interfaces, but backed by a
     pico_dual_PMSM_BUG79100G_DRV8316C board over USB instead of an ODRI
