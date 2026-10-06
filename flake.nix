@@ -10,7 +10,7 @@
       {
         rosDistros = [ "jazzy" ];
         rosShellDistro = "jazzy";
-        rosOverrideAttrs.pico-dual-drv8316c-ros2-hardware-interface = {
+        rosOverrideAttrs.motkin-ros2-hardware-interface = {
           src = lib.fileset.toSource {
             root = ./.;
             fileset = lib.fileset.unions [
@@ -18,8 +18,8 @@
               ./CONTRIBUTING.md
               ./include
               ./LICENSE
+              ./motkin_ros2_hardware_interface.xml
               ./package.xml
-              ./pico_dual_drv8316c_hardware_interface.xml
               ./ros2_control
               ./src
             ];
