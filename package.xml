@@ -10,9 +10,8 @@
   </description>
   <maintainer email="guilhem.saurel@laas.fr">Guilhem Saurel</maintainer>
   <license>Apache-2.0</license>
-
-  <author email="olivier.stasse@laas.fr">Olivier Stasse</author>
   <url type="repository">https://github.com/Gepetto/motkin-ros2-hardware-interface</url>
+  <author email="olivier.stasse@laas.fr">Olivier Stasse</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
