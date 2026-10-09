@@ -43,6 +43,13 @@ const std::set<std::string>& SystemMotkinHardware::expected_interfaces() {
   return interfaces;
 }
 
+const std::map<std::string, std::string>&
+SystemMotkinHardware::expected_gpio_interfaces() {
+  static const std::map<std::string, std::string> interfaces{
+      {kHwIfclock, "uint32"}, {kHwIfindex, "uint32"}, {kHwIfflags, "uint8"}};
+  return interfaces;
+}
+
 hardware_interface::CallbackReturn SystemMotkinHardware::on_init(
     const hardware_interface::HardwareComponentInterfaceParams& info) {
   if (hardware_interface::SystemInterface::on_init(info) !=
@@ -56,9 +63,17 @@ hardware_interface::CallbackReturn SystemMotkinHardware::on_init(
     return hardware_interface::CallbackReturn::ERROR;
   }
 
+  if (info_.gpios.size() != kNumGPIO) {
+    RCLCPP_FATAL(logger(), "Expected exactly %zu gpio, got %zu.",
+                 kNumGPIO, info_.gpios.size());
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+
   for (std::size_t i = 0; i < kNumMotors; ++i) {
     joint_names_[i] = info_.joints[i].name;
   }
+
+  gpio_name_ = info_.gpios[0].name;
 
   serial_device_ = get_param_or(info_, "serial_port", "");
   baud_rate_ = static_cast<unsigned int>(std::strtoul(
@@ -108,33 +123,53 @@ hardware_interface::CallbackReturn SystemMotkinHardware::on_configure(
       }
     }
 
-    hw_states_[i] = JointValues{};
     hw_commands_[i] = JointValues{};
     control_mode_[i] = ControlMode::NO_VALID_MODE;
+
+    const std::string prefix = joint_names_[i] + "/";
+    joint_state_names_[i] = JointStateNames{
+        prefix + hardware_interface::HW_IF_POSITION,
+        prefix + hardware_interface::HW_IF_VELOCITY,
+        prefix + hardware_interface::HW_IF_EFFORT, prefix + kHwIfGainKp,
+        prefix + kHwIfGainKd};
   }
+
+  const hardware_interface::ComponentInfo& gpio = info_.gpios[0];
+  if (!gpio.command_interfaces.empty()) {
+    RCLCPP_FATAL(logger(), "GPIO '%s' has %zu command interfaces, expected 0.",
+                 gpio.name.c_str(), gpio.command_interfaces.size());
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+  if (gpio.state_interfaces.size() != expected_gpio_interfaces().size()) {
+    RCLCPP_FATAL(logger(), "GPIO '%s' has %zu state interfaces, expected %zu.",
+                 gpio.name.c_str(), gpio.state_interfaces.size(),
+                 expected_gpio_interfaces().size());
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+  for (const auto& state_if : gpio.state_interfaces) {
+    auto it = expected_gpio_interfaces().find(state_if.name);
+    if (it == expected_gpio_interfaces().end()) {
+      RCLCPP_FATAL(logger(), "GPIO '%s' has unexpected state interface '%s'.",
+                   gpio.name.c_str(), state_if.name.c_str());
+      return hardware_interface::CallbackReturn::ERROR;
+    }
+    // set_state<T>() in read() requires the handle to have this exact type.
+    if (state_if.data_type != it->second) {
+      RCLCPP_FATAL(logger(),
+                   "GPIO '%s' state interface '%s' has data_type '%s', "
+                   "expected '%s'.",
+                   gpio.name.c_str(), state_if.name.c_str(),
+                   state_if.data_type.c_str(), it->second.c_str());
+      return hardware_interface::CallbackReturn::ERROR;
+    }
+  }
+
+  const std::string gpio_prefix = gpio_name_ + "/";
+  gpio_state_names_ = GPIOStateNames{gpio_prefix + kHwIfclock,
+                                     gpio_prefix + kHwIfindex,
+                                     gpio_prefix + kHwIfflags};
 
   return hardware_interface::CallbackReturn::SUCCESS;
-}
-
-std::vector<hardware_interface::StateInterface>
-SystemMotkinHardware::export_state_interfaces() {
-  std::vector<hardware_interface::StateInterface> state_interfaces;
-  for (std::size_t i = 0; i < kNumMotors; ++i) {
-    state_interfaces.emplace_back(joint_names_[i],
-                                  hardware_interface::HW_IF_POSITION,
-                                  &hw_states_[i].position);
-    state_interfaces.emplace_back(joint_names_[i],
-                                  hardware_interface::HW_IF_VELOCITY,
-                                  &hw_states_[i].velocity);
-    state_interfaces.emplace_back(joint_names_[i],
-                                  hardware_interface::HW_IF_EFFORT,
-                                  &hw_states_[i].effort);
-    state_interfaces.emplace_back(joint_names_[i], kHwIfGainKp,
-                                  &hw_states_[i].Kp);
-    state_interfaces.emplace_back(joint_names_[i], kHwIfGainKd,
-                                  &hw_states_[i].Kd);
-  }
-  return state_interfaces;
 }
 
 std::vector<hardware_interface::CommandInterface>
@@ -303,17 +338,28 @@ hardware_interface::return_type SystemMotkinHardware::read(
     return hardware_interface::return_type::OK;
   }
 
-  hw_states_[0].position = state.m0_q;
-  hw_states_[0].velocity = state.m0_v;
-  hw_states_[0].effort = state.m0_i;
-  hw_states_[0].Kp = hw_commands_[0].Kp;
-  hw_states_[0].Kd = hw_commands_[0].Kd;
+  const std::array<float, kNumMotors> q{{state.m0_q, state.m1_q}};
+  const std::array<float, kNumMotors> v{{state.m0_v, state.m1_v}};
+  const std::array<float, kNumMotors> i_meas{{state.m0_i, state.m1_i}};
+  for (std::size_t i = 0; i < kNumMotors; ++i) {
+    const JointStateNames& names = joint_state_names_[i];
+    set_state(names.position, static_cast<double>(q[i]));
+    set_state(names.velocity, static_cast<double>(v[i]));
+    set_state(names.effort, static_cast<double>(i_meas[i]));
+    set_state(names.Kp, hw_commands_[i].Kp);
+    set_state(names.Kd, hw_commands_[i].Kd);
+  }
 
-  hw_states_[1].position = state.m1_q;
-  hw_states_[1].velocity = state.m1_v;
-  hw_states_[1].effort = state.m1_i;
-  hw_states_[1].Kp = hw_commands_[1].Kp;
-  hw_states_[1].Kd = hw_commands_[1].Kd;
+  // The template argument must match the URDF data_type checked in
+  // on_configure().
+  // StatePacket is packed: copy fields out before binding to set_state()'s
+  // const reference parameter.
+  const uint32_t t_us = state.t_us;
+  const uint32_t latest_command_index = state.latest_command_index;
+  const uint8_t flags = state.flags;
+  set_state<uint32_t>(gpio_state_names_.clock, t_us);
+  set_state<uint32_t>(gpio_state_names_.index, latest_command_index);
+  set_state<uint8_t>(gpio_state_names_.flags, flags);
 
   return hardware_interface::return_type::OK;
 }

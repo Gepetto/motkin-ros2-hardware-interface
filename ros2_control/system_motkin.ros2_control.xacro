@@ -18,7 +18,8 @@
                        right_joint_name:=motor_2
                        serial_port:=''
                        baud_rate:=115200
-                       timeout_ms:=20">
+                       timeout_ms:=20
+                       gpio_name:=motkin_board">
 
     <ros2_control name="${name}" type="system">
       <hardware>
@@ -86,6 +87,13 @@
         <state_interface name="gain_kp"/>
         <state_interface name="gain_kd"/>
       </joint>
+
+      <!-- Board status. data_type must match what the plugin expects. -->
+      <gpio name="${gpio_name}">
+        <state_interface name="clock" data_type="uint32"/>
+        <state_interface name="latest_command_index" data_type="uint32"/>
+        <state_interface name="flags" data_type="uint8"/>
+      </gpio>
     </ros2_control>
 
   </xacro:macro>
