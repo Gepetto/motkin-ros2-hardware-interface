@@ -64,8 +64,8 @@ hardware_interface::CallbackReturn SystemMotkinHardware::on_init(
   }
 
   if (info_.gpios.size() != kNumGPIO) {
-    RCLCPP_FATAL(logger(), "Expected exactly %zu gpio, got %zu.",
-                 kNumGPIO, info_.gpios.size());
+    RCLCPP_FATAL(logger(), "Expected exactly %zu gpio, got %zu.", kNumGPIO,
+                 info_.gpios.size());
     return hardware_interface::CallbackReturn::ERROR;
   }
 
@@ -127,11 +127,11 @@ hardware_interface::CallbackReturn SystemMotkinHardware::on_configure(
     control_mode_[i] = ControlMode::NO_VALID_MODE;
 
     const std::string prefix = joint_names_[i] + "/";
-    joint_state_names_[i] = JointStateNames{
-        prefix + hardware_interface::HW_IF_POSITION,
-        prefix + hardware_interface::HW_IF_VELOCITY,
-        prefix + hardware_interface::HW_IF_EFFORT, prefix + kHwIfGainKp,
-        prefix + kHwIfGainKd};
+    joint_state_names_[i] =
+        JointStateNames{prefix + hardware_interface::HW_IF_POSITION,
+                        prefix + hardware_interface::HW_IF_VELOCITY,
+                        prefix + hardware_interface::HW_IF_EFFORT,
+                        prefix + kHwIfGainKp, prefix + kHwIfGainKd};
   }
 
   const hardware_interface::ComponentInfo& gpio = info_.gpios[0];
@@ -165,9 +165,9 @@ hardware_interface::CallbackReturn SystemMotkinHardware::on_configure(
   }
 
   const std::string gpio_prefix = gpio_name_ + "/";
-  gpio_state_names_ = GPIOStateNames{gpio_prefix + kHwIfclock,
-                                     gpio_prefix + kHwIfindex,
-                                     gpio_prefix + kHwIfflags};
+  gpio_state_names_ =
+      GPIOStateNames{gpio_prefix + kHwIfclock, gpio_prefix + kHwIfindex,
+                     gpio_prefix + kHwIfflags};
 
   return hardware_interface::CallbackReturn::SUCCESS;
 }

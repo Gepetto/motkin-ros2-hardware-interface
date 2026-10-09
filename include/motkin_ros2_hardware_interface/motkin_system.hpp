@@ -40,9 +40,9 @@ namespace motkin_ros2_hardware_interface {
 
 constexpr const char* kHwIfGainKp = "gain_kp";
 constexpr const char* kHwIfGainKd = "gain_kd";
-constexpr const char* kHwIfclock  = "clock";
-constexpr const char* kHwIfindex =  "latest_command_index";
-constexpr const char* kHwIfflags =  "flags";
+constexpr const char* kHwIfclock = "clock";
+constexpr const char* kHwIfindex = "latest_command_index";
+constexpr const char* kHwIfflags = "flags";
 
 /// Per-joint command/state storage. `effort` carries the board's current
 /// feedforward / measured current in Amps, `Kp`/`Kd` the PD gains in
