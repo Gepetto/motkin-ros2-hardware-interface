@@ -19,6 +19,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
+#include <map>
 #include <mutex>
 #include <set>
 #include <string>
@@ -39,6 +40,9 @@ namespace motkin_ros2_hardware_interface {
 
 constexpr const char* kHwIfGainKp = "gain_kp";
 constexpr const char* kHwIfGainKd = "gain_kd";
+constexpr const char* kHwIfclock = "clock";
+constexpr const char* kHwIfindex = "latest_command_index";
+constexpr const char* kHwIfflags = "flags";
 
 /// Per-joint command/state storage. `effort` carries the board's current
 /// feedforward / measured current in Amps, `Kp`/`Kd` the PD gains in
@@ -54,6 +58,7 @@ struct JointValues {
 /// Two joints are expected: index 0 drives motor M0, index 1 drives motor M1,
 /// in the order the joints appear under the <ros2_control> tag.
 constexpr std::size_t kNumMotors = 2;
+constexpr std::size_t kNumGPIO = 1;
 
 class SystemMotkinHardware : public hardware_interface::SystemInterface {
  public:
@@ -65,9 +70,6 @@ class SystemMotkinHardware : public hardware_interface::SystemInterface {
 
   hardware_interface::CallbackReturn on_configure(
       const rclcpp_lifecycle::State& previous_state) override;
-
-  std::vector<hardware_interface::StateInterface> export_state_interfaces()
-      override;
 
   std::vector<hardware_interface::CommandInterface> export_command_interfaces()
       override;
@@ -103,12 +105,33 @@ class SystemMotkinHardware : public hardware_interface::SystemInterface {
   uint16_t watchdog_timeout_ms_{20};
 
   // ---- ros2_control bookkeeping, one slot per joint ----
+  // State interfaces are owned by the framework (created from the URDF
+  // InterfaceDescriptions, which carry the data_type) and written in read()
+  // through set_state(); only commands still use raw double storage.
   std::array<JointValues, kNumMotors> hw_commands_;
-  std::array<JointValues, kNumMotors> hw_states_;
   std::array<ControlMode, kNumMotors> control_mode_{};
   std::array<std::string, kNumMotors> joint_names_;
+  std::string gpio_name_;
 
+  /// Full "<prefix>/<interface>" state interface names, built once in
+  /// on_configure() so read() does not allocate strings every cycle.
+  struct JointStateNames {
+    std::string position;
+    std::string velocity;
+    std::string effort;
+    std::string Kp;
+    std::string Kd;
+  };
+  struct GPIOStateNames {
+    std::string clock;
+    std::string index;
+    std::string flags;
+  };
+  std::array<JointStateNames, kNumMotors> joint_state_names_;
+  GPIOStateNames gpio_state_names_;
   static const std::set<std::string>& expected_interfaces();
+  /// GPIO state interface name -> required URDF data_type.
+  static const std::map<std::string, std::string>& expected_gpio_interfaces();
 
   // ---- Serial transport + background reader thread ----
   SerialPort serial_port_;
